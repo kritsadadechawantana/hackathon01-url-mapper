@@ -24,29 +24,33 @@ namespace UrlMapper
 
         public string[] GetPatterns()
         {
-             var routParams = new List<string>();
-             var routPattern = this.pattern;
-             var param = string.Empty;
+            const string beginParamSymbol = "{";
+            const string endParamSymbol = "}";
+
+            var routParams = new List<string>();
+            var routPattern = this.pattern;
+            var param = string.Empty;
             while (!string.IsNullOrEmpty(routPattern))
             {
-                if (routPattern.StartsWith("{"))
+                if (routPattern.StartsWith(beginParamSymbol))
                 {
-                    var beginIndex = routPattern.IndexOf("{");
-                    var endIndex = routPattern.IndexOf("}");
+                    var beginIndex = routPattern.IndexOf(beginParamSymbol);
+                    var endIndex = routPattern.IndexOf(endParamSymbol);
+                    param = routPattern.Substring(beginIndex, endIndex - beginIndex + 1);
+                    routParams.Add(param);
+                }
+                else
+                {
+                    var beginIndex = 0;
+                    var endIndex = routPattern.IndexOf(beginParamSymbol);
                     param = routPattern.Substring(beginIndex, endIndex - beginIndex);
                     routParams.Add(param);
                 }
-                else{
-                    var beginIndex = 0;
-                    var endIndex = routPattern.IndexOf("{");
-                    param = routPattern.Substring(beginIndex, endIndex - beginIndex - 1);
-                    routParams.Add(param);
-                }
 
-                routPattern.Replace($"{param}/", string.Empty);
+                routPattern = routPattern.Replace(param, string.Empty);
             }
-            
-            
+
+
             return routParams.ToArray();
         }
     }
