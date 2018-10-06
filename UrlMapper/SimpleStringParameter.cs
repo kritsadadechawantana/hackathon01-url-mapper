@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UrlMapper
 {
     public class SimpleStringParameter : ISimpleStringParameter
     {
-        private readonly string pattern;
+        private string pattern;
 
         public SimpleStringParameter(string pattern)
         {
@@ -23,12 +24,30 @@ namespace UrlMapper
 
         public string[] GetPatterns()
         {
-            var result = new string[4];
-            result[0] = pattern.Substring(0, 20);
-            result[1] = pattern.Substring(21, 8);
-            result[2] = pattern.Substring(30,8);
-            result[3] = pattern.Substring(39,12);
-            return result;
+             var routParams = new List<string>();
+             var routPattern = this.pattern;
+             var param = string.Empty;
+            while (!string.IsNullOrEmpty(routPattern))
+            {
+                if (routPattern.StartsWith("{"))
+                {
+                    var beginIndex = routPattern.IndexOf("{");
+                    var endIndex = routPattern.IndexOf("}");
+                    param = routPattern.Substring(beginIndex, endIndex - beginIndex);
+                    routParams.Add(param);
+                }
+                else{
+                    var beginIndex = 0;
+                    var endIndex = routPattern.IndexOf("{");
+                    param = routPattern.Substring(beginIndex, endIndex - beginIndex - 1);
+                    routParams.Add(param);
+                }
+
+                routPattern.Replace($"{param}/", string.Empty);
+            }
+            
+            
+            return routParams.ToArray();
         }
     }
 }
