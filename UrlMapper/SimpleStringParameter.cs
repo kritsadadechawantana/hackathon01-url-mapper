@@ -23,7 +23,12 @@ namespace UrlMapper
 
         public string[] GetPatterns()
         {
-            return new string[]{};
+            var result = new string[4];
+            result[0] = pattern.Substring(0, 20);
+            result[1] = pattern.Substring(21, 8);
+            result[2] = pattern.Substring(30,8);
+            result[3] = pattern.Substring(39,12);
+            return result;
         }
     }
 }
