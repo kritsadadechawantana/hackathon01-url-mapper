@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace UrlMapper
 {
@@ -14,21 +15,30 @@ namespace UrlMapper
 
         public void ExtractVariables(string target, IDictionary<string, string> dicToStoreResults)
         {
-            throw new System.NotImplementedException();
+            var isInvalidInput = target == null || dicToStoreResults == null;
+            if(isInvalidInput) return;
+
+            var routParam = GetPatterns(this.pattern);
+            dicToStoreResults = GetValueFromUrl(target, routParam);
         }
 
         public bool IsMatched(string textToCompare)
         {
-            throw new System.NotImplementedException();
+            var isInvalidInput = textToCompare == null;
+            if(isInvalidInput) return false;
+            if(this.pattern == textToCompare) return true;
+
+            var routParam = GetPatterns(this.pattern);
+            return IsRoutMatch(textToCompare, routParam);
         }
 
-        public string[] GetPatterns()
+        public string[] GetPatterns(string pattern)
         {
             const string beginParamSymbol = "{";
             const string endParamSymbol = "}";
 
             var routParams = new List<string>();
-            var routPattern = this.pattern;
+            var routPattern = pattern;
             var param = string.Empty;
             while (!string.IsNullOrEmpty(routPattern))
             {
@@ -43,6 +53,7 @@ namespace UrlMapper
                 {
                     var beginIndex = 0;
                     var endIndex = routPattern.IndexOf(beginParamSymbol);
+                    endIndex = endIndex == -1 ? routPattern.Length : endIndex;
                     param = routPattern.Substring(beginIndex, endIndex - beginIndex);
                     routParams.Add(param);
                 }
@@ -52,6 +63,82 @@ namespace UrlMapper
 
 
             return routParams.ToArray();
+        }
+
+        private bool isRoutParam(string textToCompare)
+        {
+            if(textToCompare == null) return false; 
+            return textToCompare.StartsWith("{") && textToCompare.EndsWith("}");
+        }
+
+        public Dictionary<string, string> GetValueFromUrl(string url, string[] patternParams)
+        {
+            var targetUrl = url;
+            var param = string.Empty;
+            var RoutValue = new Dictionary<string, string>();
+
+            for (int index = 0; index < patternParams.Length; index++)
+            {
+                var currentParam = patternParams[index];
+                if (isRoutParam(currentParam))
+                {
+                    if(!(index == patternParams.Length - 1))
+                    {
+                        var beginIndex = 0;
+                        var endIndex = targetUrl.IndexOf(patternParams[index+1][0]);
+                        param = targetUrl.Substring(beginIndex, endIndex);
+                    }else
+                    {
+                        var beginIndex = 0;
+                        var endIndex = targetUrl.Length;
+                        param = targetUrl.Substring(beginIndex, endIndex);
+                    }
+                    RoutValue.Add(currentParam, param);
+                }
+                else
+                {
+                    if (!targetUrl.StartsWith(currentParam)) return RoutValue;
+                    param = currentParam;
+                }
+
+                targetUrl = targetUrl.Replace(param, string.Empty);
+            }
+
+            return RoutValue;
+        }
+
+        public bool IsRoutMatch(string url, string[] patternParams)
+        {
+            var targetUrl = url;
+            var param = string.Empty;
+
+            for (int index = 0; index < patternParams.Length; index++)
+            {
+                var currentParam = patternParams[index];
+                if (isRoutParam(currentParam))
+                {
+                    if(!(index == patternParams.Length - 1))
+                    {
+                        var beginIndex = 0;
+                        var endIndex = targetUrl.IndexOf(patternParams[index+1][0]);
+                        param = targetUrl.Substring(beginIndex, endIndex);
+                    }else
+                    {
+                        var beginIndex = 0;
+                        var endIndex = targetUrl.Length;
+                        param = targetUrl.Substring(beginIndex, endIndex);
+                    }
+                }
+                else
+                {
+                    if (!targetUrl.StartsWith(currentParam)) return false;
+                    param = currentParam;
+                }
+
+                targetUrl = targetUrl.Replace(param, string.Empty);
+            }
+
+            return true;
         }
     }
 }
