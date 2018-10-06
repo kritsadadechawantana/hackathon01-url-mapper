@@ -16,13 +16,15 @@ namespace UrlMapper.Tests
             Assert.Equal(true, isMatched); 
         }
 
-        [Fact]
-        public void Test_GetPatterns()
+        [Theory]
+        [InlineData("https://mana.com/linkto/{link-id}", new string[]{"https://mana.com/linkto", "{link-id}"})]
+        [InlineData("http://google.com/?s={keyword}", new string[]{"http://google.com/?s=", "{keyword}"})]
+        [InlineData("https://mana.com/app/{app-id}/services/{service-id}", new string[]{"https://mana.com/app", "{app-id}", "services", "{service-id}"})]
+        [InlineData("https://mana.com/app/{app/-id}/services/{service-id}", new string[]{"https://mana.com/app", "{app/-id}", "services", "{service-id}"})]
+        public void Test_GetPatterns(string pattern, string[] expected)
         {
-            var strParam = new SimpleStringParameter("https://mana.com/app/{app-id}/services/{service-id}");
+            var strParam = new SimpleStringParameter(pattern);
             var result = strParam.GetPatterns();
-
-            var expected = new string[]{"https://mana.com/app", "{app-id}", "services", "{service-id}"};
             
             Assert.Equal(expected, result);
         }
