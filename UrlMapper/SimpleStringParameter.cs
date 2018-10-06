@@ -15,16 +15,22 @@ namespace UrlMapper
 
         public void ExtractVariables(string target, IDictionary<string, string> dicToStoreResults)
         {
-            var isInvalidInput = target == null || dicToStoreResults == null;
+            var isInvalidInput = target == null 
+                || dicToStoreResults == null
+                || this.pattern == null;
             if(isInvalidInput) return;
 
             var routParam = GetPatterns(this.pattern);
-            dicToStoreResults = GetValueFromUrl(target, routParam);
+            var paramValueStore = GetValueFromUrl(target, routParam);
+            foreach (var item in paramValueStore)
+            {
+                dicToStoreResults.Add(item);
+            }
         }
 
         public bool IsMatched(string textToCompare)
         {
-            var isInvalidInput = textToCompare == null;
+            var isInvalidInput = this.pattern == null || textToCompare == null;
             if(isInvalidInput) return false;
             if(this.pattern == textToCompare) return true;
 
@@ -85,7 +91,8 @@ namespace UrlMapper
                     if(!(index == patternParams.Length - 1))
                     {
                         var beginIndex = 0;
-                        var endIndex = targetUrl.IndexOf(patternParams[index+1][0]);
+                        var endIndex = targetUrl.IndexOf(patternParams[index+1]);
+                        endIndex = endIndex == -1 ? targetUrl.Length : endIndex;
                         param = targetUrl.Substring(beginIndex, endIndex);
                     }else
                     {
@@ -120,9 +127,11 @@ namespace UrlMapper
                     if(!(index == patternParams.Length - 1))
                     {
                         var beginIndex = 0;
-                        var endIndex = targetUrl.IndexOf(patternParams[index+1][0]);
+                        var endIndex = targetUrl.IndexOf(patternParams[index + 1]);
+                        endIndex = endIndex == -1 ? targetUrl.Length : endIndex;
                         param = targetUrl.Substring(beginIndex, endIndex);
-                    }else
+                    }
+                    else
                     {
                         var beginIndex = 0;
                         var endIndex = targetUrl.Length;

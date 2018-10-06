@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SecondRound.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="fluentassertions" Version="5.4.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="moq" Version="4.10.0" />
