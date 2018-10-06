@@ -15,5 +15,16 @@ namespace UrlMapper.Tests
 
             Assert.Equal(true, isMatched); 
         }
+
+        [Fact]
+        public void Test_GetPatterns()
+        {
+            var strParam = new SimpleStringParameter("https://mana.com/app/{app-id}/services/{service-id}");
+            var result = strParam.GetPatterns();
+
+            var expected = new string[]{"https://mana.com/app", "{app-id}", "services", "{service-id}"};
+            
+            Assert.Equal(expected, result);
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace UrlMapper
 
         public string[] GetPatterns()
         {
-            
+            return new string[]{};
         }
     }
 }
