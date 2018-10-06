@@ -10,9 +10,9 @@ namespace UrlMapper.Tests
         //public void Test_Matching()
         //{
         //    var strBuilder = new SimpleStringParameterBuilder();
-        //    var strParam = strBuilder.Parse("http://hackathon.com/{username}/none");
+        //    var strParam = strBuilder.Parse("http://google.com/{user}/aa");
 
-        //    var isMatched = strParam.IsMatched("http://hackathon.com/test 123/none");
+        //    var isMatched = strParam.IsMatched("http://google.com//aa");
 
         //    Assert.Equal(true, isMatched);
         //}
@@ -67,24 +67,24 @@ namespace UrlMapper.Tests
         //    Assert.Equal(expected, result);
         //}
 
-        [Fact]
-        public void Test_GetValueFromUrl3()
-        {
-            var url = "http://hackathon.com/test/123/none";
-            var patternParams = new string[] { "http://hackathon.com/", "{username}", "/none" };
-            var expected = new Dictionary<string, string> { { "{username}", "test/123" } };
-            var strParam = new SimpleStringParameter(string.Empty);
-            var result = strParam.GetValueFromUrl(url, patternParams);
+        //[Fact]
+        //public void Test_GetValueFromUrl3()
+        //{
+        //    var url = "http://hackathon.com/test/123/none";
+        //    var patternParams = new string[] { "http://hackathon.com/", "{username}", "/none" };
+        //    var expected = new Dictionary<string, string> { { "{username}", "test/123" } };
+        //    var strParam = new SimpleStringParameter(string.Empty);
+        //    var result = strParam.GetValueFromUrl(url, patternParams);
 
-            Assert.Equal(expected, result);
-        }
+        //    Assert.Equal(expected, result);
+        //}
 
         [Fact]
         public void Test_GetValueFromUrl4()
         {
-            var url = "http://google.com/?s=Xamarin";
-            var patternParams = new string[] { "http://google.com/?s=", "{keyword}"};
-            var expected = new Dictionary<string, string> { { "{keyword}", "Xamarin" }};
+            var url = "http://google.com/";
+            var patternParams = new string[] { "http://google.com/","{user}" };
+            var expected = new Dictionary<string, string> { { "{user}", "" } };
             var strParam = new SimpleStringParameter(string.Empty);
             var result = strParam.GetValueFromUrl(url, patternParams);
 

@@ -108,7 +108,7 @@ namespace UrlMapper
                     param = currentParam;
                 }
 
-                targetUrl = targetUrl.Replace(param, string.Empty);
+                if (!string.IsNullOrEmpty(param)) targetUrl = targetUrl.Replace(param, string.Empty);
             }
 
             return RoutValue;
@@ -144,8 +144,11 @@ namespace UrlMapper
                     param = currentParam;
                 }
 
-                targetUrl = targetUrl.Replace(param, string.Empty);
+                if (!string.IsNullOrEmpty(param)) targetUrl = targetUrl.Replace(param, string.Empty);
+                
             }
+
+            if (!string.IsNullOrEmpty(targetUrl)) return false;
 
             return true;
         }
